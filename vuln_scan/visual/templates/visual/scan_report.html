@@ -1,0 +1,117 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <title>Scanning Report</title>
+    <script src="{% static "visual/vendor/echarts.common.min.js" %}" defer></script>
+    <script src="{% static "visual/vendor/jquery-3.3.1.min.js" %}"></script>
+    <script src="{% static "visual/vendor/jquery.dataTables.min.js" %}"></script>
+    <script src="{% static "visual/custom/js/main.js" %}" defer></script>
+
+    <link rel="stylesheet" href="{% static "visual/vendor/bootstrap/css/bootstrap.min.css" %}">
+    <link rel="stylesheet" href="{% static "visual/vendor/bootstrap/css/dataTables.bootstrap4.min.css" %}">
+    <link rel="stylesheet" href="{% static "visual/custom/css/main.css" %}">
+
+    <link rel="apple-touch-icon" sizes="16x16" href="https://www.trilio.io/wp-content/uploads/2017/05/Trilio-Final-Logo_GRAY-GREEN-copy.png"/>
+    <link rel="apple-touch-icon" sizes="57x57" href="https://www.trilio.io/wp-content/uploads/2017/05/Trilio-Final-Logo_GRAY-GREEN-copy.png"/>
+    <link rel="apple-touch-icon" sizes="72x72" href="https://www.trilio.io/wp-content/uploads/2017/05/Trilio-Final-Logo_GRAY-GREEN-copy.png"/>
+    <link rel="shortcut icon" type="image/png" sizes="72x72" href="https://www.trilio.io/wp-content/uploads/2017/05/Trilio-Final-Logo_GRAY-GREEN-copy.png"/>
+    <link rel="shortcut icon" type="image/png" sizes="57x57" href="https://www.trilio.io/wp-content/uploads/2017/05/Trilio-Final-Logo_GRAY-GREEN-copy.png"/>
+    <link rel="shortcut icon" type="image/png" sizes="16x16" href="https://www.trilio.io/wp-content/uploads/2017/05/Trilio-Final-Logo_GRAY-GREEN-copy.png"/>
+
+    <script>
+        $(document).ready(function() {
+            let severity_summary = {{ severity_summary|safe }};
+            load_severity_chart(severity_summary);
+
+            let vuln_count = {{ vuln_count|safe }};
+            load_vuln_count_chart(vuln_count);
+
+            $("#data-table").DataTable({
+                "paging": false,
+                "info": false,
+                "aoColumns": [
+                    {"bSearchable": true},
+                    {"bSearchable": false},
+                    {"bSearchable": false},
+                    {"bSearchable": false},
+                    {"bSearchable": false},
+                    {"bSearchable": false},
+                    {"bSearchable": false},
+                    {"bSearchable": false}],
+                "oLanguage": {
+                    "sSearch": "Search by App Name:"
+                }
+            });
+        })
+    </script>
+</head>
+<body>
+    <nav class="navbar navbar-dark bg-dark">
+      <a class="navbar-brand" href="https://www.trilio.io/">
+        <img src="{% static "visual/custom/images/trilio-logo.png" %}" class="d-inline-block align-top" alt=""
+        style="height: 30px; margin-right: 7px;">
+        Vulnerability Scanning Report
+      </a>
+    </nav>
+
+    <div class="container" style="margin-top: 20px;">
+        <div class="row">
+            <div class="col-6">
+                <div id="vuln_count_chart">
+
+                </div>
+            </div>
+            <div class="col-6">
+                <div id="severity_chart">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr />
+
+    <div class="container">
+        <table class="table table-sm table-bordered" id="data-table">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">App Name</th>
+                    <th scope="col">App Version</th>
+                    <th scope="col">CVE</th>
+                    <th scope="col">Vector</th>
+                    <th scope="col">Published</th>
+                    <th scope="col">Impact Score</th>
+                    <th scope="col">Exploitability Score</th>
+                    <th scope="col">Severity</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for vuln in scan_results %}
+                    <tr>
+                        <td>{{ vuln.app_name }}</td>
+                        <td>{{ vuln.app_version }}</td>
+                        <td><a href="https://www.cvedetails.com/cve/{{ vuln.cve_id }}" target="_blank">{{ vuln.cve_id }}</a></td>
+                        <td>{{ vuln.vector }}</td>
+                        <td>{{ vuln.published_date }}</td>
+                        <td>{{ vuln.impact_score }}</td>
+                        <td>{{ vuln.exploitability_score }}</td>
+                        <td class={% if vuln.severity == "HIGH" %}
+                            bg-danger
+                            {% elif vuln.severity == "MEDIUM" %}
+                            bg-warning
+                            {% elif vuln.severity == "LOW" %}
+                            bg-info
+                            {% endif %}>
+                            {{ vuln.severity }}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

@@ -1,0 +1,34 @@
+th, td {
+    text-align: center;
+}
+
+table {
+    width: 100%;
+    margin: 40px 0 auto;
+}
+
+#severity_chart, #vuln_count_chart {
+    width: 100%;
+    min-height: 400px;
+    margin: auto;
+}
+
+.dataTable > thead > tr > th[class*="sort"]:after{
+    content: "" !important;
+}
+
+h1 {
+    text-align: center;
+}
+
+.severity-high {
+    background-color: #d1001e;
+}
+
+.severity-medium {
+    background-color: #2f4d5d;
+}
+
+.severity-low {
+    background-color: #55b4ba;
+}

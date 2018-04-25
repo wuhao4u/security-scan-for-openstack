@@ -1,0 +1,46 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <title>Scanning Report</title>
+    <script src="{% static "visual/vendor/jquery-3.3.1.min.js" %}"></script>
+
+    <link rel="stylesheet" href="{% static "visual/vendor/bootstrap/css/bootstrap.min.css" %}">
+    <link rel="stylesheet" href="{% static "visual/vendor/bootstrap/css/dataTables.bootstrap4.min.css" %}">
+    <link rel="stylesheet" href="{% static "visual/custom/css/main.css" %}">
+
+    <link rel="apple-touch-icon" sizes="16x16" href="https://www.trilio.io/wp-content/uploads/2017/05/Trilio-Final-Logo_GRAY-GREEN-copy.png"/>
+    <link rel="apple-touch-icon" sizes="57x57" href="https://www.trilio.io/wp-content/uploads/2017/05/Trilio-Final-Logo_GRAY-GREEN-copy.png"/>
+    <link rel="apple-touch-icon" sizes="72x72" href="https://www.trilio.io/wp-content/uploads/2017/05/Trilio-Final-Logo_GRAY-GREEN-copy.png"/>
+    <link rel="shortcut icon" type="image/png" sizes="72x72" href="https://www.trilio.io/wp-content/uploads/2017/05/Trilio-Final-Logo_GRAY-GREEN-copy.png"/>
+    <link rel="shortcut icon" type="image/png" sizes="57x57" href="https://www.trilio.io/wp-content/uploads/2017/05/Trilio-Final-Logo_GRAY-GREEN-copy.png"/>
+    <link rel="shortcut icon" type="image/png" sizes="16x16" href="https://www.trilio.io/wp-content/uploads/2017/05/Trilio-Final-Logo_GRAY-GREEN-copy.png"/>
+</head>
+<body>
+    <nav class="navbar navbar-dark bg-dark">
+      <a class="navbar-brand" href="https://www.trilio.io/">
+        <img src="{% static "visual/custom/images/trilio-logo.png" %}" class="d-inline-block align-top" alt=""
+        style="height: 30px; margin-right: 7px;">
+        Vulnerability Scanning Summary
+      </a>
+    </nav>
+
+    <div class="container" style="margin-top: 20px;"> 
+    {% if data|length == 0 %}
+        <p>No scanning result for this workload.</p>
+    {% else %}
+        {% for snapshot, vms in data.items %}
+            <h3>{{ snapshot }}</h3>
+            {% for vm in vms %}
+                <a href="{{ vm }}">{{ vm }}</a>
+                <div/>
+            {% endfor %}
+            <hr />
+        {% endfor %}
+    {% endif %}
+    </div>
+</body>
+</html>
